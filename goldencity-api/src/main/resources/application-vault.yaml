@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    vault:
+      host: ${VAULT_HOST:localhost}
+      port: ${VAULT_PORT:8200}
+      scheme: http
+      authentication: TOKEN
+      token: ${VAULT_TOKEN}
+
+      kv:
+        # 1. v2 엔진 버전을 명시해줘야 해
+        backend-version: 2
+        enabled: true
+        backend: secret
+        # 2. 일단 배치서버 경로로 설정 > 아니면 정책변경해야함
+        application-name: goldencity-batch
+        profile-separator: ""
+        default-context: ""
+
+  config:
+    # 3. 경로를 명확하게 지정해주는 게 에러를 줄이는 비결이야
+    import: vault://secret/goldencity-batch
