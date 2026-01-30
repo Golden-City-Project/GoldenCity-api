@@ -53,11 +53,11 @@ public class Accommodation extends BaseEntity {
     private BigDecimal longitude;
 
     // 요약 정보 (객실수, 입실/퇴실시간, 편의시설 등)
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String summary;
 
     // 상세 설명
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String content;
 
     // 홈페이지 URL

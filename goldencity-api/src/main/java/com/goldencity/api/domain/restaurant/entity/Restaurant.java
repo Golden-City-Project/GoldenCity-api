@@ -66,11 +66,11 @@ public class Restaurant extends BaseEntity {
     private BigDecimal longitude;
 
     // 요약 정보 (영업시간, 대표메뉴 등)
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String summary;
 
     // 상세 설명
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String content;
 
     // 홈페이지 URL

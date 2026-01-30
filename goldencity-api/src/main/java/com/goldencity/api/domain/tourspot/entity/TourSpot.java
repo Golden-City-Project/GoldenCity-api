@@ -50,7 +50,7 @@ public class TourSpot extends BaseEntity {
     private BigDecimal longitude;
 
     // 상세 설명
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String content;
 
     // 입장권 판매 시작 시간

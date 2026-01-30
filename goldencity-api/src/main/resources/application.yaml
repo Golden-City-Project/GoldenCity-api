@@ -33,10 +33,10 @@ spring:
 
   # 데이터베이스 설정
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:3306/goldencity?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:1234}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
 #    hikari:
 #      maximum-pool-size: 20
 #      minimum-idle: 10
@@ -44,17 +44,40 @@ spring:
 #      idle-timeout: 600000
 #      max-lifetime: 1800000
 
-  # JPA 설정
+    # JPA 설정
   jpa:
+    database: oracle
+    database-platform: org.hibernate.dialect.OracleDialect # 최신 버전 대응
+    open-in-view: false
     hibernate:
       ddl-auto: update
-    show-sql: false
+      # 자바에서 tourSpot 이라고 쓰면 DB에 TOUR_SPOT으로 바꿔줌 (오라클은 이렇게 해야된다네)
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    show-sql: true
     properties:
       hibernate:
+        # 오라클은 대문자가 기본. 하이버네이트한테 억지로 따옴표 붙이지 말라고 하기
+        globally_quoted_identifiers: false
+        # 중요! 테이블이 있는지 체크하는 방식을 오라클에 맞춰주기
+        hibernate.hbm2ddl.extra_physical_table_check: true
+        # 자바 변수명을 DB 컬럼명으로 바꿀 때 그대로 쓰게 하는 설정
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        # 26ai는 멀티테넌시 기능이 강화돼서 admin 공간을 명확하게 찍어줘야함
+        default_schema: ADMIN
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
-        default_batch_fetch_size: 100
-    open-in-view: false
+        #        dialect: org.hibernate.dialect.OracleDialect
+        # 아래 설정을 추가해서 하이버네이트가 오라클을 더 잘 이해하게 해줘!
+        temp:
+          use_jdbc_metadata_defaults: false
+        # 배치를 한꺼번에 100개씩 넣게 해주는 부스터
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
+        # 에러방지용 : @Lob 긴글처리할때 TEXT말고 만들게 해주는
+        lob:
+          non_contextual_creation: true
 
 # Virtual Thread 설정
 spring.threads.virtual.enabled: true
